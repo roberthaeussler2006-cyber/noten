@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compass - Noten & Leistungen</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #fff;
+      color: #333;
+      font-size: 15px;
+      line-height: 1.5;
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .top-bar .logo-text {
+      font-size: 18px;
+      color: #333;
+      font-weight: 400;
+    }
+
+    .top-bar .right-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .globe-icon {
+      width: 24px;
+      height: 24px;
+      color: #666;
+    }
+
+    .lang-switch {
+      font-size: 15px;
+      color: #666;
+    }
+
+    .lang-switch .active {
+      color: #333;
+      font-weight: 600;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      display: flex;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 2px solid #4a8c3f;
+    }
+
+    .nav-logo {
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-logo svg {
+      width: 40px;
+      height: 40px;
+    }
+
+    .nav-items {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      gap: 24px;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: #555;
+      font-size: 12px;
+      gap: 4px;
+    }
+
+    .nav-item svg {
+      width: 22px;
+      height: 22px;
+      color: #555;
+    }
+
+    .nav-profile {
+      padding: 0 12px;
+      flex-shrink: 0;
+    }
+
+    .nav-profile img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    /* Main content */
+    .content {
+      padding: 24px 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 400;
+      color: #222;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    .info-text {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.65;
+      margin-bottom: 28px;
+    }
+
+    /* Grade cards */
+    .grade-card {
+      background: #f5f5f5;
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .grade-row {
+      display: flex;
+      align-items: baseline;
+      padding: 10px 0;
+    }
+
+    .grade-label {
+      font-size: 13px;
+      color: #777;
+      width: 140px;
+      text-align: right;
+      padding-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .grade-value {
+      font-size: 17px;
+      color: #222;
+      font-weight: 400;
+    }
+
+    .grade-value.course-name {
+      font-size: 19px;
+      font-weight: 400;
+    }
+
+    .status-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .status-label {
+      font-size: 13px;
+      color: #777;
+      width: 140px;
+      text-align: right;
+      padding-right: 16px;
+      flex-shrink: 0;
+    }
+
+    .btn-verfuegung {
+      display: inline-block;
+      padding: 8px 20px;
+      border: 1.5px solid #2a6496;
+      border-radius: 4px;
+      color: #2a6496;
+      font-size: 14px;
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-verfuegung:hover {
+      background: #f0f6fc;
+    }
+
+    /* Assessment section */
+    .assessment-section {
+      margin-top: 36px;
+    }
+
+    .assessment-title {
+      font-size: 24px;
+      font-weight: 400;
+      color: #222;
+      line-height: 1.35;
+      margin-bottom: 12px;
+    }
+
+    .ects-total {
+      font-size: 20px;
+      font-weight: 400;
+      color: #222;
+      margin-bottom: 16px;
+    }
+
+    /* Progress bars */
+    .progress-section {
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 28px;
+      background: #e0e0e0;
+      border-radius: 0;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #2d6e6e;
+      border-radius: 0;
+      transition: width 0.3s;
+    }
+
+    .progress-label {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    /* Minus-Kreditnotenpunkte */
+    .minus-credit {
+      font-size: 17px;
+      color: #444;
+      margin-top: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* Funnel chart placeholder */
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin: 20px 0;
+      padding: 0 10px;
+    }
+
+    .funnel-chart {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .funnel-bar {
+      height: 14px;
+      background: #c8c8c8;
+      border-radius: 2px;
+    }
+
+    .funnel-chart-small {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      text-align: center;
+    }
+
+    .chart-label {
+      font-size: 14px;
+      color: #444;
+      margin-top: 8px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .close-chart {
+      width: 20px;
+      height: 20px;
+      background: #ddd;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+      cursor: pointer;
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 24px 0;
+    }
+
+    /* Grade average */
+    .grade-average-section {
+      text-align: center;
+      margin: 24px 0;
+    }
+
+    .grade-average-title {
+      font-size: 22px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    .grade-circle {
+      width: 120px;
+      height: 120px;
+      background: #3a8a3a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .grade-circle-value {
+      font-size: 32px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Warning box */
+    .warning-box {
+      text-align: center;
+      padding: 20px 16px;
+      margin: 24px 0;
+      border-top: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .warning-icon {
+      font-size: 20px;
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    .warning-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: #333;
+      line-height: 1.5;
+    }
+
+    .details-link {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+      color: #555;
+      font-size: 14px;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .details-link svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Button */
+    .btn-notenauszug {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border: 1.5px solid #2a6496;
+      border-radius: 4px;
+      color: #2a6496;
+      font-size: 15px;
+      text-decoration: none;
+      background: transparent;
+      cursor: pointer;
+      margin: 16px 0 40px;
+      transition: background 0.2s;
+    }
+
+    .btn-notenauszug:hover {
+      background: #f0f6fc;
+    }
+
+    .btn-notenauszug svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Footer sections */
+    .footer-section {
+      background: #f5f5f5;
+      padding: 32px 20px;
+    }
+
+    .footer-section h3 {
+      font-size: 22px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .footer-link {
+      display: block;
+      color: #2a6496;
+      font-size: 15px;
+      text-decoration: none;
+      padding: 6px 0;
+      line-height: 1.5;
+    }
+
+    .footer-link::after {
+      content: ' \2197';
+      font-size: 14px;
+    }
+
+    .footer-link:hover {
+      text-decoration: underline;
+    }
+
+    .footer-links-section {
+      margin-top: 32px;
+    }
+
+    .footer-links-section h3 {
+      font-size: 22px;
+      font-weight: 400;
+      color: #333;
+      margin-bottom: 16px;
+    }
+
+    /* Bottom footer */
+    .bottom-footer {
+      background: #f5f5f5;
+      padding: 32px 20px 40px;
+      border-top: 1px solid #ddd;
+    }
+
+    .copyright {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .legal-link {
+      display: block;
+      font-size: 14px;
+      color: #555;
+      text-decoration: none;
+      padding: 4px 0;
+    }
+
+    .legal-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Floating action buttons */
+    .fab-container {
+      position: fixed;
+      right: 12px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    .fab {
+      width: 52px;
+      height: 52px;
+      border-radius: 8px;
+      border: 1.5px solid #ccc;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .fab svg {
+      width: 26px;
+      height: 26px;
+      color: #2a6496;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar -->
+  <div class="top-bar">
+    <span class="logo-text">Compass</span>
+    <div class="right-section">
+      <svg class="globe-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10A15.3 15.3 0 0 1 12 2z"/>
+      </svg>
+      <span class="lang-switch"><span class="active">DE</span> | EN</span>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="nav-bar">
+    <div class="nav-logo">
+      <div style="width: 40px; height: 40px; overflow: hidden;">
+        <img src="logo.png" alt="HSG Logo" style="height: 40px; object-fit: cover; object-position: left;">
+      </div>
+    </div>
+    <div class="nav-items">
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+          <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+          <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+        </svg>
+        <span>Übersicht</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="5" y="4" width="14" height="17" rx="1"/>
+          <path d="M9 8h6M9 12h6M9 16h4"/>
+        </svg>
+        <span>Anträge</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="3" y="5" width="18" height="14" rx="2"/>
+          <path d="M3 7l9 5 9-5"/>
+        </svg>
+        <span>Postfach</span>
+      </a>
+    </div>
+    <div class="nav-profile">
+      <img src="profile.png" alt="Profile">
+    </div>
+  </nav>
+
+  <!-- Main content -->
+  <div class="content">
+    <h1>Noten & Leistungen</h1>
+
+    <h2>Notenanzeige und Verfügung auf Verlangen</h2>
+
+    <p class="info-text">
+      Sie können innert 50 Tagen nach Publikation des Prüfungsresultates in Compass eine Verfügung verlangen. Die Verfügung dient Ihnen als Rechtsmittel, wenn Sie gegen das Prüfungsresultat rekurrieren möchten. Nach Zustellung der Verfügung in Ihr Compass-Postfach beginnt die 14-tägige Rekursfrist zu laufen. Bitte berücksichtigen Sie dies in Hinblick auf die Prüfungseinsichtstermine. Prüfungsresultate und Leistungsanrechnungen, für die keine Verfügung bestellt werden, erwachsen nach Ablauf der 50 Tage in Rechtskraft.
+    </p>
+
+    <!-- Grade Card: Accountancy -->
+    <div class="grade-card">
+      <div class="grade-row">
+        <span class="grade-label">Leistung</span>
+        <span class="grade-value course-name">Accountancy</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">Note</span>
+        <span class="grade-value">1.00</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">ECTS</span>
+        <span class="grade-value">-</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">MNCP</span>
+        <span class="grade-value">-</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">Beantragungsfrist</span>
+        <span class="grade-value">25.03.2026</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <button class="btn-verfuegung">Verfügung verlangen</button>
+      </div>
+    </div>
+
+    <!-- Grade Card: Introduction to Academic Writing -->
+    <div class="grade-card">
+      <div class="grade-row">
+        <span class="grade-label">Leistung</span>
+        <span class="grade-value course-name">Introduction to Academic Writing</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">Note</span>
+        <span class="grade-value">5.00</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">ECTS</span>
+        <span class="grade-value">3.00</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">MNCP</span>
+        <span class="grade-value">-</span>
+      </div>
+      <div class="grade-row">
+        <span class="grade-label">Beantragungsfrist</span>
+        <span class="grade-value">13.03.2026</span>
+      </div>
+      <div class="status-row">
+        <span class="status-label">Status</span>
+        <button class="btn-verfuegung">Verfügung verlangen</button>
+      </div>
+    </div>
+
+    <!-- Assessment section -->
+    <div class="assessment-section">
+      <h2 class="assessment-title">Assessmentjahr in Wirtschaftswissenschaften (18ASWe) 1. Versuch</h2>
+      <div class="ects-total">ECTS 3/60</div>
+
+      <!-- Main progress bar -->
+      <div class="progress-section">
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" style="width: 5%"></div>
+        </div>
+      </div>
+
+      <!-- Fachstudium -->
+      <div class="progress-section">
+        <div class="progress-label">0/45 Fachstudium</div>
+        <div class="progress-bar-container" style="height: 22px;">
+          <div class="progress-bar-fill" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Kontextstudium -->
+      <div class="progress-section">
+        <div class="progress-label">3/15 Kontextstudium</div>
+        <div class="progress-bar-container" style="height: 22px;">
+          <div class="progress-bar-fill" style="width: 20%"></div>
+        </div>
+      </div>
+
+      <!-- Minus-Kreditnotenpunkte -->
+      <div class="minus-credit">Minus-Kreditnotenpunkte 0.00/12.00</div>
+
+      <!-- Funnel charts -->
+      <div class="chart-container">
+        <div class="funnel-chart">
+          <div class="close-chart">&times;</div>
+          <div class="funnel-bar" style="width: 160px;"></div>
+          <div class="funnel-bar" style="width: 150px;"></div>
+          <div class="funnel-bar" style="width: 140px;"></div>
+          <div class="funnel-bar" style="width: 130px;"></div>
+          <div class="funnel-bar" style="width: 118px;"></div>
+          <div class="funnel-bar" style="width: 106px;"></div>
+          <div class="funnel-bar" style="width: 94px;"></div>
+          <div class="funnel-bar" style="width: 82px;"></div>
+          <div class="funnel-bar" style="width: 70px;"></div>
+          <div class="funnel-bar" style="width: 58px;"></div>
+          <div class="funnel-bar" style="width: 46px;"></div>
+        </div>
+        <div class="funnel-chart-small">
+          <div class="close-chart">&times;</div>
+          <div class="funnel-bar" style="width: 80px; height: 12px;"></div>
+          <div class="funnel-bar" style="width: 72px; height: 12px;"></div>
+          <div class="funnel-bar" style="width: 64px; height: 12px;"></div>
+          <div class="funnel-bar" style="width: 56px; height: 12px;"></div>
+          <div class="funnel-bar" style="width: 48px; height: 12px;"></div>
+          <div class="funnel-bar" style="width: 40px; height: 12px;"></div>
+          <div class="chart-label">davon im Kontextstudium<br>0/4</div>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Grade average -->
+    <div class="grade-average-section">
+      <div class="grade-average-title">Notendurchschnitt</div>
+      <div class="grade-circle">
+        <span class="grade-circle-value">5.00</span>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Warning -->
+    <div class="warning-box" style="border-top: none;">
+      <div>
+        <span class="warning-icon">&#9888;</span>
+        <span class="warning-text">Bitte beachten Sie allfällige programmspezifische Auflagen, die für einen erfolgreichen Abschluss erfüllt sein müssen.</span>
+      </div>
+      <a class="details-link" href="#">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="12" cy="12" r="10"/>
+          <circle cx="12" cy="12" r="3"/>
+        </svg>
+        Details anzeigen
+      </a>
+    </div>
+
+    <!-- Notenauszug button -->
+    <button class="btn-notenauszug">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <rect x="5" y="3" width="14" height="18" rx="1"/>
+        <path d="M9 7h6M9 11h6M9 15h3"/>
+        <path d="M5 7H3v15a1 1 0 001 1h12v-2"/>
+      </svg>
+      Notenauszug anfordern
+    </button>
+  </div>
+
+  <!-- Footer: Merkblätter -->
+  <div class="footer-section">
+    <h3>Merkblätter, Formulare</h3>
+    <a class="footer-link" href="#">Prüfungsordnung Assessment</a>
+    <a class="footer-link" href="#">Prüfungsordnung Bachelor</a>
+    <a class="footer-link" href="#">Prüfungsordnung Master</a>
+    <a class="footer-link" href="#">Kurswahl- und Prüfungsmerkblatt Gaststudierende</a>
+
+    <div class="footer-links-section">
+      <h3>weitere Links</h3>
+      <a class="footer-link" href="#">Einbuchung Studienleistungen Bachelor und Master</a>
+    </div>
+  </div>
+
+  <!-- Bottom footer -->
+  <div class="bottom-footer">
+    <p class="copyright">&copy; Universität St.Gallen</p>
+    <a class="legal-link" href="#">Allgemeine rechtliche Hinweise</a>
+    <a class="legal-link" href="#">Datenschutz</a>
+  </div>
+
+  <!-- Floating action buttons -->
+  <div class="fab-container">
+    <div class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2a6496" stroke-width="1.5">
+        <rect x="3" y="5" width="18" height="14" rx="2"/>
+        <path d="M3 7l9 5 9-5"/>
+        <circle cx="18" cy="7" r="4" fill="#2a6496" stroke="none"/>
+      </svg>
+    </div>
+    <div class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#2a6496" stroke-width="1.5">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </div>
+  </div>
+
+</body>
+</html>
