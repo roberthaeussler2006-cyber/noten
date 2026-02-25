@@ -4,7 +4,7 @@
 |---|---|
 | Accountancy | - |
 | Introduction to Academic Writing | 3.00 |
-| Economics | 5.50 |
+| Economics A | 5.50 |
 | Law A | 5.50 |
 | Business A | 5.50 |
 | Math A | 3.50 |
